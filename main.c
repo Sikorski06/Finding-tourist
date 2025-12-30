@@ -114,6 +114,7 @@ int main(int argc, char **argv) {
 				zapis(roj,gbest, fsave, i, p);
 		}
 	}
+	printf("\nPozycja z najsilniejszym sygnałem znaleziona przez rój:\nx= %.2lf\ny= %.2lf\nwartość sygnału= %.2lf\n",gbest->x,gbest->y, gbest->val);
 	fclose(fsave);
 	free_roj(roj,gbest);
 	free_map(mapa);
