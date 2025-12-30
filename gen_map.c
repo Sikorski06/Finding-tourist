@@ -101,7 +101,7 @@ int main(int argc, char** argv){
 			mapa[y][x] = best;
 		}
 	}
-	FILE* fptr = fopen("mapa.txt", "w");
+	FILE* fptr = fopen("Finding-tourist/mapa.txt", "w");
 	if (!fptr) {
     		printf("Nie udało się utworzyć pliku!\n");
     		return 1; // Zakończ z błędem
