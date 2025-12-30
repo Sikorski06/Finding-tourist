@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
+
 
 int main(int argc, char **argv) {
     if (argc < 2) {
@@ -25,6 +27,9 @@ int main(int argc, char **argv) {
     int iters = 100; // liczba iteracji
     int n = 0;       // co ile zapis (0 = nie zapisuj)
     const char *cfg = NULL;
+    double parametry[5] = {0.5, 1, 0, 1, 0};
+    srand((unsigned)time(NULL));
+
 
     // sprawdzenie flag jak są to musi byc wartosc
     for (int k = 2; k < argc; k++) {
@@ -85,6 +90,10 @@ int main(int argc, char **argv) {
                 fprintf(stderr, "Blad: nie moge otworzyc pliku konfiguracyjnego: %s\n", cfg);
                 return 1;
             }
+	    for(int h = 0; h<5; i++){
+		fscanf(fcfg,"%lf",&parametry[h]);
+	    }
+	    srand((parametry[4]*1e6)^(parametry[2]*1e6)); // XOR z parametrów r1 r2 i stworzenie z tego seeda losowan inaczej nie widze sensu podania tych parametrów w pliku config
             fclose(fcfg);
             k++;
 
