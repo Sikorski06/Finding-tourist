@@ -1,3 +1,5 @@
+#ifndef PSO_H
+#define PSO_H
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -37,3 +39,5 @@ void PSO(double** mapa, int W, int H, Particle* roj, int n, Gbest *gbest,double*
 
 
 void free_roj(Particle *roj);
+
+#endif

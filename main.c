@@ -1,9 +1,6 @@
 #include "map.h"
 #include "pso.h"
 #include "Logger.h"
-
-#include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 #include <time.h>
 
@@ -107,7 +104,17 @@ int main(int argc, char **argv) {
     	printf("mapa=%s p=%d i=%d n=%d cfg=%s\n",argv[1], p, iters, n, cfg ? cfg : "(brak)"); // podglad
 	int W,H;
 	double** mapa = get_map(argv[1], &W, &H);
-	
+	Particle* roj = inicjalizacja_roju(mapa, W, H, p);
+	GBest *gbest = inicjalizacja_gbest(roj, p);
+	FILE *fsave = fopen("Zapis_iteracji.csv","w");
+	for(int i = 1; i< iters+1; i++){
+		PSO(mapa, W, H, roj, p, gbest, parametry);	
+		if(i % n == 0 && n != 0){
+			zapis(roj,gbest, fsave, n, p);
+		}
+	}
+	fclose(fsave);
+	free_roj(roj,gbest);
 	free_map(mapa);
     	return 0;
 }

@@ -12,7 +12,7 @@ double fitness(double **mapa, int W, int H, double x, double y){
 
 
 Particle *inicjalizacja_roju(double **mapa, int W, int H, int n) {
-    Particle *roj = malloc((size_t)n * sizeof(Particle));
+    Particle *roj = malloc(n * sizeof(Particle));
     
     if (!roj)
         return NULL;
@@ -33,7 +33,7 @@ Particle *inicjalizacja_roju(double **mapa, int W, int H, int n) {
 
 
 GBest inicjalizacja_gbest(Particle *roj, int n){
-    GBest g;
+    GBest g = malloc(sizeof(GBest));
     g.x = roj[0].pbest_x;
     g.y = roj[0].pbest_y;
     g.val = roj[0].pbest_val;
@@ -61,6 +61,15 @@ void PSO(double** mapa, int W, int H, Particle* roj, int n, Gbest *gbest,double*
 		roj[i].vy = (w*roj[i].vy) + c1 * r1 * (roj[i].pbest_y - roj[i].y) + c2 * r2 * (gbest->y - roj[i].y);
 		roj[i].x += roj[i].vx;
 		roj[i].y += roj[i].vy;
+		if (roj[i].x < 0.0) 
+			roj[i].x = 0.0;
+		if (roj[i].x > (double)(W - 1)) 
+			roj[i].x = (double)(W - 1);
+		if (roj[i].y < 0.0) 
+			roj[i].y = 0.0;
+		if (roj[i].y > (double)(H - 1)) 
+			roj[i].y = (double)(H - 1);
+
 		roj[i].fit = fitness(mapa, W, H, roj[i].x, roj[i].y);
 		if(roj[i].fit > roj[i].pbest_val){
 			roj[i].pbest_x = roj[i].x;
@@ -77,7 +86,8 @@ void PSO(double** mapa, int W, int H, Particle* roj, int n, Gbest *gbest,double*
 
 
 
-void free_roj(Particle *roj){
+void free_roj(Particle *roj, GBest *gbest){
     free(roj);
+    free(gbest);
 }
 
