@@ -8,9 +8,14 @@ double point_value(int x, int y, int xp, int yp, int R, double Smax){ //wartosc 
 	if(d > R)
 		return -1000.00;
 	else{
-		double val = Smax * (1 - d/(double)R) - NOISE + 2*(rand() % 10)/(NOISE*10);
+		double u = (double)rand() / ((double)RAND_MAX + 1.0); // [0,1)
+		double noise = (2.0 * u - 1.0) * NOISE;
+		double val = Smax * (1.0 - d / (double)R) + noise;
+		// nie robimy ujemnych gorek (tlo i tak jest -1000)
+		if (val < 0.0) 
+			val = 0.0;
+		return val;
 	}
-	return val;
 }
 
 int min(int a, int b){
@@ -46,7 +51,57 @@ int main(int argc, char** argv){
 		return 1;
 	}
 	int Pole = W * H; // pole mapy
-	int K = (ceil(Pole/150) > 6 ? 6 : (int)ceil(Pole/150));	// ile górek 
-	int R = max(2, (int)ceil(min(W,H)/6));	// promień górki
-	double Smax = 30.0 + (rand() % 7001) / 100.0 ;	// max sygnal
+	int K = (ceil(Pole/150.0) > 6 ? 6 : (int)ceil(Pole/150.0));	// ile górek 
+	int R = max(2, (int)ceil(min(W,H)/6.0));	// promień górki
+	double mapa[H][W];
+	for(int x =0; x < H; x++){
+		for(int y = 0; y < W; y++){
+			mapa[x][y] = -1000.00;
+		}
+	}
+	int sx[K], sy[K];
+	int min_dist = max(2, (int)ceil(min(W, H) / 6.0));
+	int liczba_prob = 0;
+	
+	for(int i = 0; i<K; i++){
+		int err =0;
+		liczba_prob +=1;
+		sx[i] = rand() % W;
+		sy[i] = rand() % H;
+		for(int j = i-1; j >= 0; j--){
+			if(sqrt((sx[i] - sx[j])*(sx[i] - sx[j])+(sy[i] - sy[j])*(sy[i] - sy[j])) < min_dist){
+				i--;
+				err = 1;
+				liczba_prob++;
+				break;}
+		}
+		if (err) {
+			if (liczba_prob > 15) {
+				K = i + 1; // tyle udalo sie sensownie wylosowac
+				break;
+			}
+			continue;
+		}
+		liczba_prob = 0;
+	}
+
+	double s_val[K];
+	for(int i =0;i<K;i++){
+		s_val[i] =  30.0 + (rand() % 7001) / 100.0 ;
+	}
+
+	for(int x =0; x < H; x++){
+		for(int y = 0; y < W; y++){
+			double best = -1000.00;
+			for(int k = 0; k< K; k++){
+				double v = point_value(x, y, sx[k], sy[k], R, s_val[k]);
+				if (v > best) 
+					best = v;
+			}
+			mapa[y][x] = best;
+		}
+	}
+
+
+	return 0;
 }
