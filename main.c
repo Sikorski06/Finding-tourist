@@ -95,8 +95,11 @@ int main(int argc, char **argv) {
         }
     }
 
-    printf("mapa=%s p=%d i=%d n=%d cfg=%s\n",argv[1], p, iters, n, cfg ? cfg : "(brak)"); // podglad
-
-    return 0;
+    	printf("mapa=%s p=%d i=%d n=%d cfg=%s\n",argv[1], p, iters, n, cfg ? cfg : "(brak)"); // podglad
+	int W,H;
+	double** mapa = get_map(argv[1], &W, &H);
+	
+	free_map(mapa);
+    	return 0;
 }
 
