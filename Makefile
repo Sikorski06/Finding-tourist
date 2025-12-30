@@ -1,53 +1,44 @@
 CC = gcc
 CFLAGS = -Wall -g
 LDFLAGS = -lm
-
-APP = app
+APP = pso
 GEN = gen_map
 
-# Domyślne wartości 
-W ?= 10
-H ?= 10
-MAPFILE ?= mapa.txt
+# Domyślne wartości
+W ?= 20
+H ?= 20
+MAPFILE = mapa.txt
 
-all: $(APP)
+.PHONY: all map clean #dzieki temu zawsze sa interpretowane jako komendy a nie pliki
 
-$(APP): main.o map.o pso.o Logger.o
-	$(CC) $(CFLAGS) -o $(APP) main.o map.o pso.o Logger.o $(LDFLAGS)
+all: map $(APP)
+	@echo "Uruchom: ./$(APP) $(MAPFILE) -p 20 ..."
 
-main.o: main.c map.h pso.h Logger.h
+$(APP): main.o map.o pso.o logger.o
+	$(CC) $(CFLAGS) -o $(APP) main.o map.o pso.o logger.o $(LDFLAGS)
+
+main.o: main.c map.h pso.h logger.h
 	$(CC) $(CFLAGS) -c main.c
 
 map.o: map.c map.h
 	$(CC) $(CFLAGS) -c map.c
 
-pso.o: pso.c pso.h map.h
+pso.o: pso.c pso.h
 	$(CC) $(CFLAGS) -c pso.c
 
-Logger.o: Logger.c Logger.h map.h
-	$(CC) $(CFLAGS) -c Logger.c
+logger.o: logger.c logger.h pso.h
+	$(CC) $(CFLAGS) -c logger.c
 
-# Generator mapy
 $(GEN): gen_map.o
 	$(CC) $(CFLAGS) -o $(GEN) gen_map.o $(LDFLAGS)
 
 gen_map.o: gen_map.c
 	$(CC) $(CFLAGS) -c gen_map.c
 
-#Wygeneruj mapę
-
+#generowanie mapy
 map: $(GEN)
-	./$(GEN) $(W) $(H) $(MAPFILE)
-
-# Workflow: zbuduj wszystko -> wygeneruj mapę -> uruchom app 
-
-run: all map
-	@echo "Mapa wygenerowana: $(MAPFILE)"
-	@echo "Uruchamiam: ./$(APP) $(MAPFILE)"
-	./$(APP) $(MAPFILE)
+	./$(GEN) $(W) $(H)
+	@echo "Stworzono mape: $(MAPFILE) (W=$(W), H=$(H))"
 
 clean:
-	rm -f *.o $(APP) $(GEN) $(MAPFILE)
-
-#make
-#make run W=7 H=7 MAPFILE=mapa.txt
+	rm -f *.o $(APP) $(GEN) 

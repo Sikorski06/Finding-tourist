@@ -1,6 +1,6 @@
 #include "map.h"
 #include "pso.h"
-#include "Logger.h"
+#include "logger.h"
 #include <string.h>
 #include <time.h>
 
@@ -87,10 +87,10 @@ int main(int argc, char **argv) {
                 fprintf(stderr, "Blad: nie moge otworzyc pliku konfiguracyjnego: %s\n", cfg);
                 return 1;
             }
-	    for(int h = 0; h<5; i++){
+	    for(int h = 0; h<5; h++){
 		fscanf(fcfg,"%lf",&parametry[h]);
 	    }
-	    srand((parametry[4]*1e6)^(parametry[2]*1e6)); // XOR z parametrów r1 r2 i stworzenie z tego seeda losowan inaczej nie widze sensu podania tych parametrów w pliku config
+	    srand((unsigned)(parametry[4]*1e6)^(unsigned)(parametry[2]*1e6)); // XOR z parametrów r1 r2 i stworzenie z tego seeda losowan inaczej nie widze sensu podania tych parametrów w pliku config
             fclose(fcfg);
             k++;
 
@@ -101,16 +101,17 @@ int main(int argc, char **argv) {
         }
     }
 
-    	printf("mapa=%s p=%d i=%d n=%d cfg=%s\n",argv[1], p, iters, n, cfg ? cfg : "(brak)"); // podglad
+    	printf("mapa= %s p= %d i= %d n= %d cfg= %s\n",argv[1], p, iters, n, cfg ? cfg : "(brak)"); // podglad
 	int W,H;
 	double** mapa = get_map(argv[1], &W, &H);
 	Particle* roj = inicjalizacja_roju(mapa, W, H, p);
 	GBest *gbest = inicjalizacja_gbest(roj, p);
-	FILE *fsave = fopen("Zapis_iteracji.csv","w");
+	FILE *fsave = fopen("zapis_iteracji.csv","w");
 	for(int i = 1; i< iters+1; i++){
-		PSO(mapa, W, H, roj, p, gbest, parametry);	
-		if(i % n == 0 && n != 0){
-			zapis(roj,gbest, fsave, n, p);
+		PSO(mapa, W, H, roj, p, gbest, parametry);
+		if(n != 0){
+			if(i % n == 0)
+				zapis(roj,gbest, fsave, i, p);
 		}
 	}
 	fclose(fsave);

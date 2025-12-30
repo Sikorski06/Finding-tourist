@@ -32,12 +32,12 @@ double fitness(double **mapa, int W, int H, double x, double y);
 Particle *inicjalizacja_roju(double **mapa, int W, int H, int n);
 
 
-GBest inicjalizacja_gbest(Particle *roj, int n);
+GBest *inicjalizacja_gbest(Particle *roj, int n);
 
 
-void PSO(double** mapa, int W, int H, Particle* roj, int n, Gbest *gbest,double* config);
+void PSO(double** mapa, int W, int H, Particle* roj, int n, GBest *gbest,double* config);
 
 
-void free_roj(Particle *roj);
+void free_roj(Particle *roj, GBest *gbest);
 
 #endif

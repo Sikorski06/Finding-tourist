@@ -32,24 +32,24 @@ Particle *inicjalizacja_roju(double **mapa, int W, int H, int n) {
 }
 
 
-GBest inicjalizacja_gbest(Particle *roj, int n){
-    GBest g = malloc(sizeof(GBest));
-    g.x = roj[0].pbest_x;
-    g.y = roj[0].pbest_y;
-    g.val = roj[0].pbest_val;
+GBest *inicjalizacja_gbest(Particle *roj, int n){
+    GBest *g = malloc(sizeof(GBest));
+    g->x = roj[0].pbest_x;
+    g->y = roj[0].pbest_y;
+    g->val = roj[0].pbest_val;
 
     for(int i = 1; i < n; i++){
-        if(roj[i].pbest_val > g.val){
-            g.val = roj[i].pbest_val;
-            g.x = roj[i].pbest_x;
-            g.y = roj[i].pbest_y;
+        if(roj[i].pbest_val > g->val){
+            g->val = roj[i].pbest_val;
+            g->x = roj[i].pbest_x;
+            g->y = roj[i].pbest_y;
         }
     }
     return g;
 }
 
 
-void PSO(double** mapa, int W, int H, Particle* roj, int n, Gbest *gbest,double* config){
+void PSO(double** mapa, int W, int H, Particle* roj, int n, GBest *gbest,double* config){
 	double r1,r2;
 	double w = config[0];
 	double c1 = config[1];
