@@ -87,11 +87,11 @@ int main(int argc, char** argv){
 
 	double s_val[K];
 	for(int i =0;i<K;i++){
-		s_val[i] =  30.0 + (rand() % 7001) / 100.0 ;
+		s_val[i] =  15.0 + (rand() % 3501) / 100.0 ;
 	}
 
-	for(int x =0; x < H; x++){
-		for(int y = 0; y < W; y++){
+	for(int y =0; y < H; y++){
+		for(int x = 0; x < W; x++){
 			double best = -1000.00;
 			for(int k = 0; k< K; k++){
 				double v = point_value(x, y, sx[k], sy[k], R, s_val[k]);
@@ -101,7 +101,19 @@ int main(int argc, char** argv){
 			mapa[y][x] = best;
 		}
 	}
+	FILE* fptr = fopen("mapa.txt", "w");
+	if (!fptr) {
+    		printf("Nie udało się utworzyć pliku!\n");
+    		return 1; // Zakończ z błędem
+	}
+	fprintf(fptr,"%d %d\n",W,H);
+	for(int y =0; y < H; y++){
+		for(int x = 0; x < W; x++){
+			fprintf(fptr,"%.2lf ", mapa[y][x]);
+		}
+		fprintf(fptr,"\n");
 
-
+	}
+	fclose(fptr);
 	return 0;
 }
