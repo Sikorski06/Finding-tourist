@@ -18,10 +18,10 @@ Particle *inicjalizacja_roju(double **mapa, int W, int H, int n) {
         return NULL;
 
     for(int i = 0; i < n; i++){
-        roj[i].x  = (rand() % ((W-1) * 100 + 1)) / 100.0;  
-	roj[i].y  = (rand() % ((H-1) * 100 + 1)) / 100.0;
-        roj[i].vx = 0.0;
-        roj[i].vy = 0.0;
+        roj[i].x  = (double)((rand() % ((W-1) * 100 + 1)) / 100.0);  
+	roj[i].y  = (double)((rand() % ((H-1) * 100 + 1)) / 100.0);
+        roj[i].vx = ((double)rand() / RAND_MAX - 0.5); 
+        roj[i].vy = ((double)rand() / RAND_MAX - 0.5);
         roj[i].fit = fitness(mapa, W, H, roj[i].x, roj[i].y);
         roj[i].pbest_x = roj[i].x;
         roj[i].pbest_y = roj[i].y;
@@ -34,6 +34,8 @@ Particle *inicjalizacja_roju(double **mapa, int W, int H, int n) {
 
 GBest *inicjalizacja_gbest(Particle *roj, int n){
     GBest *g = malloc(sizeof(GBest));
+    if (!g) 
+	    return NULL;    
     g->x = roj[0].pbest_x;
     g->y = roj[0].pbest_y;
     g->val = roj[0].pbest_val;
@@ -50,25 +52,38 @@ GBest *inicjalizacja_gbest(Particle *roj, int n){
 
 
 void PSO(double** mapa, int W, int H, Particle* roj, int n, GBest *gbest,double* config){
-	double r1,r2;
-	double w = config[0];
+	double w  = config[0];
 	double c1 = config[1];
 	double c2 = config[3];
+	double R1 = config[2];  
+	double R2 = config[4];  
+
 	for(int i = 0; i < n; i++){
-		r1 = (double)rand() / (double)RAND_MAX;
-		r2 = (double)rand() / (double)RAND_MAX;
+		double r1 = R1 * ((double)rand() / ((double)RAND_MAX + 1.0));
+		double r2 = R2 * ((double)rand() / ((double)RAND_MAX + 1.0));
 		roj[i].vx = (w*roj[i].vx) + c1 * r1 * (roj[i].pbest_x - roj[i].x) + c2 * r2 * (gbest->x - roj[i].x);
 		roj[i].vy = (w*roj[i].vy) + c1 * r1 * (roj[i].pbest_y - roj[i].y) + c2 * r2 * (gbest->y - roj[i].y);
 		roj[i].x += roj[i].vx;
 		roj[i].y += roj[i].vy;
-		if (roj[i].x < 0.0) 
-			roj[i].x = 0.0;
-		if (roj[i].x > (double)(W - 1)) 
-			roj[i].x = (double)(W - 1);
-		if (roj[i].y < 0.0) 
-			roj[i].y = 0.0;
-		if (roj[i].y > (double)(H - 1)) 
-			roj[i].y = (double)(H - 1);
+		
+		double maxX = (double)(W - 1);
+		double maxY = (double)(H - 1);
+		if (roj[i].x < 0.0) {	//Odbicie od krawedzi 
+    			roj[i].x  = -roj[i].x;
+    			roj[i].vx = -roj[i].vx;
+		} 
+		else if (roj[i].x > maxX) {
+    			roj[i].x  = 2.0 * maxX - roj[i].x;
+    			roj[i].vx = -roj[i].vx;
+		}
+		if (roj[i].y < 0.0) {
+    			roj[i].y  = -roj[i].y;
+    			roj[i].vy = -roj[i].vy;
+		} 
+		else if (roj[i].y > maxY) {
+    			roj[i].y  = 2.0 * maxY - roj[i].y;
+    			roj[i].vy = -roj[i].vy;
+		}
 
 		roj[i].fit = fitness(mapa, W, H, roj[i].x, roj[i].y);
 		if(roj[i].fit > roj[i].pbest_val){

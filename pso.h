@@ -18,7 +18,7 @@ typedef struct Particle{
 } Particle;
 
 
-typedef struct {
+typedef struct GBest{
     double x;
     double y;
     double val;

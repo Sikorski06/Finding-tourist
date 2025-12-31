@@ -24,7 +24,7 @@ int main(int argc, char **argv) {
     int iters = 100; // liczba iteracji
     int n = 0;       // co ile zapis (0 = nie zapisuj)
     const char *cfg = NULL;
-    double parametry[5] = {0.5, 1, 0, 1, 0};
+    double parametry[5] = {0.5, 1, 1, 1, 1};
     srand((unsigned)time(NULL));
 
 
@@ -107,6 +107,7 @@ int main(int argc, char **argv) {
 	Particle* roj = inicjalizacja_roju(mapa, W, H, p);
 	GBest *gbest = inicjalizacja_gbest(roj, p);
 	FILE *fsave = fopen("zapis_iteracji.csv","w");
+	fprintf(fsave,"iter;particle;x;y;fit;pbest_val;gbest_x;gbest_y;gbest_val\n");
 	for(int i = 1; i< iters+1; i++){
 		PSO(mapa, W, H, roj, p, gbest, parametry);
 		if(n != 0){

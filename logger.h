@@ -5,6 +5,6 @@
 #include <stdlib.h>
 
 
-void zapis(Particle* roj,GBest *gbest, FILE* fptr, int n, int roj_n);
+void zapis(Particle* roj,GBest *gbest, FILE* fptr, int iter, int n_particles);
 
 #endif

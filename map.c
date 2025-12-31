@@ -3,6 +3,10 @@
 
 double **get_map(const char *file, int *W_out, int *H_out) {
 	FILE *fptr = fopen(file, "r");
+	if (!fptr) {
+   		perror("fopen");
+    		return NULL;
+	}
 	int W, H;
 
     	if (fscanf(fptr, "%d %d", &W, &H) != 2 || W <= 0 || H <= 0) {
@@ -45,7 +49,8 @@ double **get_map(const char *file, int *W_out, int *H_out) {
 }
 
 void free_map(double **mapa) {
-    free(mapa[0]); 
-    free(mapa);  
-}
-	
+    if (!mapa) 
+	    return;
+    free(mapa[0]);
+    free(mapa);
+}	
